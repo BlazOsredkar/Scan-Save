@@ -13,13 +13,17 @@ final class SignInEmailViewModel: ObservableObject {
     @Published var email = ""
     @Published var password = ""
     @Published var confirm_password = ""
+    @Published var error_text: String = ""
     
     @Published var shouldNavigateToHome = false
+    @Published var showErrorAlert = false
     
     
     func signIn(){
-        guard !email.isEmpty, !password.isEmpty else {
+        guard !email.isEmpty, !password.isEmpty, !confirm_password.isEmpty else {
             print("No email or password found")
+            error_text = "Please fill in all fields to continue."
+            showErrorAlert = true
             return
         }
         
@@ -33,6 +37,8 @@ final class SignInEmailViewModel: ObservableObject {
                     shouldNavigateToHome = true
                 } else {
                     print("Can save user, wrong password confirm")
+                    error_text = "Passwords do not match."
+                    showErrorAlert = true
                 }
                 
             } catch {
@@ -46,7 +52,6 @@ final class SignInEmailViewModel: ObservableObject {
 struct SignInEmailView: View {
     
     @StateObject private var viewModel = SignInEmailViewModel()
-
     
     var body: some View {
         ZStack {
@@ -60,6 +65,9 @@ struct SignInEmailView: View {
                     
                 VStack(alignment: .center, spacing: 10)
                 {
+                    Text("E-mail:")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(.white)
                     TextField("", text: $viewModel.email, prompt: Text("Email...").foregroundColor(.white))
                         .padding()
                         .background(Color(red: 0.37, green: 0.47, blue: 1.00))
@@ -67,40 +75,73 @@ struct SignInEmailView: View {
                         .foregroundColor(.white)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.white, lineWidth: 1)
+                                .stroke(Color.white, lineWidth: 0.5)
                         )
-                                                
-                    SecureField("Password...", text: $viewModel.password)
+                    
+                    Spacer()
+                        .frame(height: 5)
+                         
+                    Text("Password:")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(.white)
+                    SecureField("", text: $viewModel.password, prompt: Text("Password...").foregroundColor(.white))
                         .padding()
                         .background(Color(red: 0.37, green: 0.47, blue: 1.00))
                         .cornerRadius(10)
                         .foregroundColor(.white)
-                    SecureField("Repeat password...", text: $viewModel.confirm_password)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.white, lineWidth: 0.5)
+                        )
+                    Spacer()
+                        .frame(height: 5)
+                    
+                    Text("Repeat password:")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(.white)
+                    SecureField("", text: $viewModel.confirm_password, prompt: Text("Repeat password...").foregroundColor(.white))
                         .padding()
                         .background(Color(red: 0.37, green: 0.47, blue: 1.00))
                         .cornerRadius(10)
+                        .foregroundColor(.white)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.white, lineWidth: 0.5)
+                        )
                     
-                    
-                    
+                    Spacer()
+                        .frame(height: 5)
                     Button {
                         viewModel.signIn()
+                    } label: {
+                        HStack {
+                            Image(systemName: "key.horizontal.fill")
+                            Text("Sign up")
+                                .font(.headline)
+                                .foregroundColor(.blue)
+                        }
+                        .frame(height: 55)
+                        .frame(maxWidth: .infinity)
+                        .background(Color.white)
+                        .cornerRadius(10)
+                    }
+                    Spacer()
+                        .frame(height: 5)
+                    NavigationLink {
+                        AuthenticationView()
                     } label: {
                         Text("Sign in")
                             .font(.headline)
                             .foregroundColor(.white)
-                            .frame(height: 55)
-                            .frame(maxWidth: .infinity)
-                            .background(Color.blue)
-                            .cornerRadius(10)
+                            .underline()
                     }
-                    
                     Spacer()
                     
                 }
                 .padding()
                 .cornerRadius(15)
                 .padding()
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center) // Center content in VStack
+                .frame(maxWidth: .infinity, maxHeight: .infinity) // Center content in VStack
                 Spacer()
 
                 ZStack {
@@ -111,6 +152,14 @@ struct SignInEmailView: View {
                     }
                 })
             }
+        }.alert(isPresented: $viewModel.showErrorAlert) {
+            Alert(
+                title: Text("Error"),
+                message: Text(viewModel.error_text),
+                dismissButton: .default(Text("OK")) {
+                    // Handle OK button tap if needed
+                }
+            )
         }
     }
 }
