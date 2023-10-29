@@ -57,14 +57,19 @@ struct SignInEmailView: View {
                     .padding(.top, 70)
                     .foregroundColor(.white)
                     .font(.system(size: 36))
+                    
                 VStack(alignment: .center, spacing: 10)
                 {
-                    TextField("Email...", text: $viewModel.email)
+                    TextField("", text: $viewModel.email, prompt: Text("Email...").foregroundColor(.white))
                         .padding()
                         .background(Color(red: 0.37, green: 0.47, blue: 1.00))
                         .cornerRadius(10)
                         .foregroundColor(.white)
-                        
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.white, lineWidth: 1)
+                        )
+                                                
                     SecureField("Password...", text: $viewModel.password)
                         .padding()
                         .background(Color(red: 0.37, green: 0.47, blue: 1.00))
