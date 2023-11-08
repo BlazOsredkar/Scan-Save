@@ -18,7 +18,7 @@ struct MenuBarView: View {
                     Image(systemName: "house.fill")
                     Text("Home")
                 }
-            SettingsView(showSignInView: .constant(false))
+            SettingsView(showSignInView: $showSignInView)
                 .tabItem() {
                     Image(systemName: "gear.circle.fill")
                     Text("Settings")

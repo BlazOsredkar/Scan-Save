@@ -22,6 +22,7 @@ struct AuthDataResultModel {
 
 final class AuthenticationManager {
     
+    
     static let shared = AuthenticationManager()
     private init() {
         
@@ -43,6 +44,11 @@ final class AuthenticationManager {
     
     func signOut() throws {
         try Auth.auth().signOut()
+    }
+    
+    func signIN(email: String, password: String) async throws -> AuthDataResultModel {
+        let authDataResult = try await Auth.auth().signIn(withEmail: email, password: password)
+        return AuthDataResultModel(user: authDataResult.user)
     }
     
     

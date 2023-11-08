@@ -23,11 +23,13 @@ struct SettingsView: View {
     @Binding var showSignInView: Bool
     var body: some View {
         List {
+            Spacer()
             Button("Log out") {
                 Task {
                     do {
                         try viewModel.logOut()
                         showSignInView = true
+                        print("Mali PP")
                     } catch {
                         print(error)
                     }

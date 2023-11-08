@@ -122,7 +122,6 @@
 				86495D572ACD5C730014FFC2 /* Scan_SaveApp.swift */,
 				86495D592ACD5C730014FFC2 /* ContentView.swift */,
 				86D0C2D82AEC65D70060497B /* Authentication */,
-				86D0C2CE2AEB22280060497B /* GoogleService-Info.plist */,
 				86495D5B2ACD5C750014FFC2 /* Assets.xcassets */,
 				86495D5D2ACD5C750014FFC2 /* Preview Content */,
 				86D0C2E72AED85A20060497B /* MenuBarView.swift */,
@@ -172,6 +171,7 @@
 				86D0C2DF2AEC692F0060497B /* AuthenticationManager.swift */,
 				86D0C2E52AED7FC50060497B /* HomeView.swift */,
 				86D0C2ED2AED8C180060497B /* LoginView.swift */,
+				86D0C2CE2AEB22280060497B /* GoogleService-Info.plist */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
