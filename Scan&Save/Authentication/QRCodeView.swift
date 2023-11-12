@@ -76,12 +76,12 @@ struct QRCodeScannerView: UIViewControllerRepresentable {
             metadataOutput.setMetadataObjectsDelegate(context.coordinator, queue: DispatchQueue.main)
             metadataOutput.metadataObjectTypes = [.qr]
 
-            let previewLayer = AVCaptureVideoPreviewLayer(session: session)
-            previewLayer.frame = scannerView.layer.bounds
-            previewLayer.videoGravity = .resizeAspectFill
-            scannerView.layer.addSublayer(previewLayer)
-
             viewController.view.addSubview(scannerView)
+
+            let previewLayer = AVCaptureVideoPreviewLayer(session: session)
+            previewLayer.videoGravity = .resizeAspectFill
+            previewLayer.frame = viewController.view.layer.bounds
+            scannerView.layer.addSublayer(previewLayer)
 
             DispatchQueue.global(qos: .userInitiated).async {
                 if isScanning {
@@ -127,6 +127,7 @@ struct QRCodeView: View {
                         self.isScanning = false
                     }, isScanning: $isScanning)
                     .navigationBarTitle("QR Code Scanner")
+                    .edgesIgnoringSafeArea(.all)
                 }
             }
         }
