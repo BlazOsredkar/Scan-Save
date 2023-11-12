@@ -42,6 +42,7 @@ struct QRCodeScannerView: UIViewControllerRepresentable {
     }
 
     var didFindCode: (String) -> Void
+    @Binding var isScanning: Bool
 
     // Declare AVCaptureSession as a property
     var session = AVCaptureSession()
@@ -83,8 +84,10 @@ struct QRCodeScannerView: UIViewControllerRepresentable {
             viewController.view.addSubview(scannerView)
 
             DispatchQueue.global(qos: .userInitiated).async {
-                session.startRunning()
-                print("Session started running on background thread")
+                if isScanning {
+                    session.startRunning()
+                    print("Session started running on background thread")
+                }
             }
 
         } else {
@@ -99,6 +102,7 @@ struct QRCodeScannerView: UIViewControllerRepresentable {
 
 struct QRCodeView: View {
     @State private var scannedCode: String?
+    @State private var isScanning = true
 
     var body: some View {
         NavigationView {
@@ -106,14 +110,22 @@ struct QRCodeView: View {
                 if let code = scannedCode {
                     Text("Scanned Code: \(code)")
                         .padding()
+
+                    Button("Scan Again") {
+                        // Clear the scanned code and allow scanning again
+                        self.scannedCode = nil
+                        self.isScanning = true
+                    }
+                    .padding()
                 } else {
-                    QRCodeScannerView { code in
+                    QRCodeScannerView(didFindCode: { code in
                         // Handle the QR code data
                         print("Scanned code: \(code)")
 
                         // Set the scanned code to update the UI
                         self.scannedCode = code
-                    }
+                        self.isScanning = false
+                    }, isScanning: $isScanning)
                     .navigationBarTitle("QR Code Scanner")
                 }
             }
