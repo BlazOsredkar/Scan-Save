@@ -23,6 +23,11 @@ struct MenuBarView: View {
                     Image(systemName: "gear.circle.fill")
                     Text("Settings")
                 }
+            QRCodeView()
+                .tabItem() {
+                    Image(systemName: "house.fill")
+                    Text("QR")
+                }
         }
     }
 }

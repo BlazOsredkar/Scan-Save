@@ -1,31 +1,66 @@
-//
-//  HomeView.swift
-//  Scan&Save
-//
-//  Created by Blaž Osredkar on 28. 10. 23.
-//
-
 import SwiftUI
-
-extension Color {
-    init(hex: Int, opacity: Double = 1.0) {
-        let red = Double((hex & 0xff0000) >> 16) / 255.0
-        let green = Double((hex & 0xff00) >> 8) / 255.0
-        let blue = Double((hex & 0xff) >> 0) / 255.0
-        self.init(.sRGB, red: red, green: green, blue: blue, opacity: opacity)
-    }
-}
+import CoreImage.CIFilterBuiltins
 
 struct HomeView: View {
+    @State private var deviceName = ""
+    @State private var serialNumber = ""
+    @State private var deviceType = ""
+    @State private var generatedQRCode: UIImage? = nil
+
     var body: some View {
-        ZStack {
-            Color.blue
-            
-            Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            TextField("Device Name", text: $deviceName)
+                .padding()
+
+            TextField("Serial Number", text: $serialNumber)
+                .padding()
+
+            TextField("Device Type", text: $deviceType)
+                .padding()
+
+            Button("Generate QR Code") {
+                generateQRCode()
+            }
+            .padding()
+
+            if let qrCode = generatedQRCode {
+                Image(uiImage: qrCode)
+                    .resizable()
+                    .scaledToFit()
+                    .padding()
+            }
+        }
+        .padding()
+        .background(Color.blue.edgesIgnoringSafeArea(.all))
+    }
+
+    func generateQRCode() {
+        let dataString = "\(deviceName)\n\(serialNumber)\n\(deviceType)"
+
+        if let filter = CIFilter(name: "CIQRCodeGenerator") {
+            let data = dataString.data(using: .utf8)
+            filter.setValue(data, forKey: "inputMessage")
+
+            if let outputImage = filter.outputImage {
+                let context = CIContext()
+
+                let scale: CGFloat = 5.0 // Adjust the scale factor as needed
+                let scaledImage = outputImage.transformed(by: CGAffineTransform(scaleX: scale, y: scale))
+
+                if let cgImage = context.createCGImage(scaledImage, from: scaledImage.extent) {
+                    let uiImage = UIImage(cgImage: cgImage, scale: 1.0, orientation: .up)
+                    generatedQRCode = uiImage
+
+                    // Save QR code to the photo gallery
+                    UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
+                }
+            }
         }
     }
 }
 
-#Preview {
-    HomeView()
+struct HomeView_Previews: PreviewProvider {
+    static var previews: some View {
+        HomeView()
+    }
 }
