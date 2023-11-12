@@ -23,7 +23,7 @@ struct SettingsView: View {
     @Binding var showSignInView: Bool
     var body: some View {
         List {
-            Spacer()
+   
             Button("Log out") {
                 Task {
                     do {

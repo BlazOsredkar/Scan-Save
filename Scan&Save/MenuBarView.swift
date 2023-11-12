@@ -15,18 +15,18 @@ struct MenuBarView: View {
         TabView {
             HomeView()
                 .tabItem() {
-                    Image(systemName: "house.fill")
+                    Image(systemName: "house")
                     Text("Home")
-                }
-            SettingsView(showSignInView: $showSignInView)
-                .tabItem() {
-                    Image(systemName: "gear.circle.fill")
-                    Text("Settings")
                 }
             QRCodeView()
                 .tabItem() {
-                    Image(systemName: "house.fill")
-                    Text("QR")
+                    Image(systemName: "qrcode.viewfinder")
+                    Text("Scan QR")
+                }
+            SettingsView(showSignInView: $showSignInView)
+                .tabItem() {
+                    Image(systemName: "gear")
+                    Text("Settings")
                 }
         }
     }

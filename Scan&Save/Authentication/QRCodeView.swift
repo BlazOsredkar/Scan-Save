@@ -31,7 +31,7 @@ struct QRCodeScannerView: UIViewControllerRepresentable {
                 let deviceType = components[2]
 
                 // Do something with the extracted data
-                print("Name: \(name), Serial Number: \(serialNumber), Device Type: \(deviceType)")
+                let code = "Name: \(name), \nSerial Number: \(serialNumber), \nDevice Type: \(deviceType)"
 
                 // Pass the scanned code to the callback
                 parent.didFindCode(code)
@@ -101,34 +101,53 @@ struct QRCodeScannerView: UIViewControllerRepresentable {
 }
 
 struct QRCodeView: View {
+    
     @State private var scannedCode: String?
     @State private var isScanning = true
 
+    
     var body: some View {
         NavigationView {
-            VStack {
-                if let code = scannedCode {
-                    Text("Scanned Code: \(code)")
-                        .padding()
-
-                    Button("Scan Again") {
-                        // Clear the scanned code and allow scanning again
-                        self.scannedCode = nil
-                        self.isScanning = true
-                    }
-                    .padding()
-                } else {
-                    QRCodeScannerView(didFindCode: { code in
-                        // Handle the QR code data
-                        print("Scanned code: \(code)")
-
-                        // Set the scanned code to update the UI
-                        self.scannedCode = code
-                        self.isScanning = false
-                    }, isScanning: $isScanning)
-                    .navigationBarTitle("QR Code Scanner")
+            ZStack {
+                Color(red: 0.22, green: 0.34, blue: 0.96)
                     .edgesIgnoringSafeArea(.all)
-                }
+                VStack {
+                    if let code = scannedCode {
+                        Text("Scanned Code: \n\(code)")
+                            .font(.system(size: 30))
+                            
+                        
+                        Button {
+                            // Clear the scanned code and allow scanning again
+                            self.scannedCode = nil
+                            self.isScanning = true
+                        }label: {
+                            HStack {
+                                Image(systemName: "qrcode")
+                                Text("Scan QR code again")
+                                    .font(.headline)
+                                    .foregroundColor(.blue)
+                            }
+                            .frame(height: 55)
+                            .frame(maxWidth: .infinity)
+                            .background(Color.white)
+                            .cornerRadius(10)
+                            .padding(20)
+                        }
+                        .padding()
+                    } else {
+                        QRCodeScannerView(didFindCode: { code in
+                            // Handle the QR code data
+                            print("Scanned code: \(code)")
+                            
+                            // Set the scanned code to update the UI
+                            self.scannedCode = code
+                            self.isScanning = false
+                        }, isScanning: $isScanning)
+                        .navigationBarTitle("QR Code Scanner")
+                        .edgesIgnoringSafeArea(.top)
+                    }
+                }.edgesIgnoringSafeArea(.horizontal)
             }
         }
     }
